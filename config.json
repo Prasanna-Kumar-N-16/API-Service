@@ -1,3 +1,5 @@
 {
-    "test":"config19"
+    "httpConfig":{
+        "host":":8080"
+    }
 }

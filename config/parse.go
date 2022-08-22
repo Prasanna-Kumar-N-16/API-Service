@@ -10,10 +10,19 @@ import (
 
 type (
 	ConfigStruct struct {
-		Test string `json:"test"`
+		HttpConfig *Service `json:"httpConfig" yml:"httpConfig"`
 		// Auth        AuthStruct  `json:"AuthStruct"`
 		// DBConfig    DBConfig    `json:"dbConfig"`
 		// HTTPService HTTPService `json:"httpService"`
+	}
+	Service struct {
+		Host               string     `json:"host" yml:"host"`
+		ISSecureConnection bool       `json:"isSecureConnection" yml:"isSecureConnection"`
+		SSLConfig          *SSLConfig `json:"sslConfig" yml:"sslConfig"`
+	}
+	SSLConfig struct {
+		PrivateKey string `json:"privateKey"`
+		CrtFile    string `json:"crtfile"`
 	}
 )
 
