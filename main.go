@@ -7,6 +7,7 @@ import (
 	service "api-service/schedule_service"
 )
 
+//todo add comments to each function
 func main() {
 	loggerService := logger.StartLogger()
 	config, err := config.Parse()
