@@ -2,7 +2,6 @@ package apiservice
 
 import (
 	"context"
-	"log"
 	"net/http"
 
 	"api-service/config"
@@ -32,10 +31,23 @@ func (apimux Api) SetRouter(config *config.ConfigStruct, apiServices *service.AP
 	ctx = context.WithValue(ctx, "config", config)
 	ctx = context.WithValue(ctx, "services", apiServices)
 	apimux.Post("/login", apimux.handleRequest(handler.Login, ctx))
+	apimux.Post("/post", apimux.handleRequest(handler.Post, ctx))
+	apimux.GET("/get", apimux.handleRequest(handler.GET, ctx))
+	apimux.PUT("/put", apimux.handleRequest(handler.PUT, ctx))
+	apimux.DELETE("/delete", apimux.handleRequest(handler.Delete, ctx))
 }
 
 func (apimux Api) Post(path string, f func(w http.ResponseWriter, r *http.Request)) {
 	apimux.router.HandleFunc(path, f).Methods("POST")
+}
+func (apimux Api) GET(path string, f func(w http.ResponseWriter, r *http.Request)) {
+	apimux.router.HandleFunc(path, f).Methods("GET")
+}
+func (apimux Api) PUT(path string, f func(w http.ResponseWriter, r *http.Request)) {
+	apimux.router.HandleFunc(path, f).Methods("PUT")
+}
+func (apimux Api) DELETE(path string, f func(w http.ResponseWriter, r *http.Request)) {
+	apimux.router.HandleFunc(path, f).Methods("DELETE")
 }
 
 func (a *Api) handleRequest(handler RequestHandlerFunction, ctx context.Context) http.HandlerFunc {
@@ -52,7 +64,6 @@ func (a *Api) Run(apiConfig config.Service) error {
 		if err := http.ListenAndServe(apiConfig.Host, a.router); err != nil {
 			return err
 		}
-		log.Println("here")
 	}
 	return nil
 }

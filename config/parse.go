@@ -1,6 +1,7 @@
 package config
 
 import (
+	"api-service/mongodb"
 	"encoding/json"
 	"errors"
 	"flag"
@@ -10,15 +11,17 @@ import (
 
 type (
 	ConfigStruct struct {
-		HttpConfig *Service `json:"httpConfig" yml:"httpConfig"`
-		// Auth        AuthStruct  `json:"AuthStruct"`
-		// DBConfig    DBConfig    `json:"dbConfig"`
-		// HTTPService HTTPService `json:"httpService"`
+		HttpConfig    *Service         `json:"httpConfig"`
+		Auth          AuthStruct       `json:"authStruct"`
+		MongoDBConfig mongodb.DBConfig `json:"mongoDBConfig"`
+	}
+	AuthStruct struct {
+		Key string `json:"key"`
 	}
 	Service struct {
-		Host               string     `json:"host" yml:"host"`
-		ISSecureConnection bool       `json:"isSecureConnection" yml:"isSecureConnection"`
-		SSLConfig          *SSLConfig `json:"sslConfig" yml:"sslConfig"`
+		Host               string     `json:"host"`
+		ISSecureConnection bool       `json:"isSecureConnection" `
+		SSLConfig          *SSLConfig `json:"sslConfig" `
 	}
 	SSLConfig struct {
 		PrivateKey string `json:"privateKey"`
@@ -42,7 +45,11 @@ func getConfig(configFlag string) (*ConfigStruct, error) {
 		if err = json.Unmarshal(fileBytes, &config); err != nil {
 			return nil, err
 		}
-		return &config, nil
+		return config.validateConfig()
 	}
 	return nil, errors.New("config file is not json file")
+}
+
+func (config ConfigStruct) validateConfig() (*ConfigStruct, error) {
+	return &config, nil
 }
