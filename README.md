@@ -92,3 +92,23 @@ RESPOSE Body -
 //ENHANCEMENTS TODO
 
 //ONLY Happiy flow is handled show test all the test cases while handling with API.
+
+
+
+HOW TO START THE SERVER :
+
+INSTALL GO IN UR MACHINE
+
+ONCE INSTALLED GIT CLONE THE REPOSITORY TO GOPATH
+
+GENERATE A BINARY FILE FROM SERVER USING COMMAND
+
+go build main.go
+
+Run the build by giving a flag input of config file
+
+./main -c config.json
+
+
+
+
