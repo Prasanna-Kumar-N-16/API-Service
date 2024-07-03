@@ -30,7 +30,7 @@ type (
 )
 
 func Parse() (*ConfigStruct, error) {
-	configFlag := flag.String("config", "config.json", "Used to read the config file")
+	configFlag := flag.String("config", "config-dev.json", "Used to read the config file")
 	flag.Parse()
 	return getConfig(*configFlag)
 }
