@@ -5,9 +5,12 @@ import (
 	apiservice "api-service/http_service"
 	"api-service/logger"
 	service "api-service/schedule_service"
+	"context"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 )
 
 func main() {
@@ -16,16 +19,11 @@ func main() {
 	if err != nil {
 		return
 	}
-	ediService, err := service.StartServices(config)
+	apiService, err := service.StartServices(config)
 	if err != nil {
 		loggerService.Panic("Unable to start the services. Reason: ", err)
 	}
 	loggerService.Infoln("services started successfully")
-	app := apiservice.Api{}
-	if err = app.Initialize(config, ediService); err != nil {
-		loggerService.Errorln("unable to start http service at port :", config.HttpConfig.Host)
-		return
-	}
 	defer func() {
 		if r := recover(); r != nil {
 			// Recovered from a panic, handle the error
@@ -33,16 +31,46 @@ func main() {
 			os.Exit(1)
 		}
 	}()
-	loggerService.Infoln("Http services started at port :", config.HttpConfig.Host)
+
+	app := apiservice.Api{}
+	r := app.SetRouter(config, apiService)
+	// Create an HTTP server
+	server := &http.Server{
+		Addr:    config.HttpConfig.Host,
+		Handler: r,
+	}
 
 	// Channel to listen for OS signals
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	// Start server in a separate goroutine
+	go func() {
+		var err error
+		if config.HttpConfig.ISSecureConnection {
+			err = server.ListenAndServeTLS(config.HttpConfig.SSLConfig.CrtFile, config.HttpConfig.SSLConfig.PrivateKey)
+		} else {
+			err = server.ListenAndServe()
+		}
 
+		if err != nil && err != http.ErrServerClosed {
+			loggerService.Errorln("Error in HTTP server:", err)
+		}
+	}()
 	loggerService.Infoln("Server started successfully")
 
 	// Wait for termination signal
 	<-quit
 	loggerService.Infoln("Shutting down server...")
+
+	// Create a context with timeout for graceful shutdown
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	// Attempt to gracefully shut down the server
+	if err := server.Shutdown(ctx); err != nil {
+		loggerService.Errorln("Error during server shutdown:", err)
+	} else {
+		loggerService.Infoln("Server shut down gracefully")
+	}
 
 }

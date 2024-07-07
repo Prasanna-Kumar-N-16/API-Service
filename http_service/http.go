@@ -1,69 +1,48 @@
 package apiservice
 
 import (
-	"context"
-	"net/http"
-
 	"api-service/config"
 	"api-service/handler"
 	"api-service/service"
 
-	"github.com/gorilla/mux"
+	helmet "github.com/danielkov/gin-helmet"
+	"github.com/gin-contrib/cors"
+
+	"github.com/gin-gonic/gin"
 )
 
 type Api struct {
-	router *mux.Router
 }
 
-type RequestHandlerFunction func(w http.ResponseWriter, r *http.Request)
+func (a Api) SetRouter(config *config.ConfigStruct, apiServices *service.APIServices) *gin.Engine {
+	// Create a new Gin router with default middleware
+	r := gin.New()
 
-func (apimux Api) Initialize(config *config.ConfigStruct, apiServices *service.APIServices) error {
-	apimux.router = mux.NewRouter()
-	apimux.SetRouter(config, apiServices)
-	if err := apimux.Run(*config.HttpConfig); err != nil {
-		return err
-	}
-	return nil
-}
+	gin.SetMode(gin.DebugMode)
 
-func (apimux Api) SetRouter(config *config.ConfigStruct, apiServices *service.APIServices) {
-	ctx := context.Background()
-	ctx = context.WithValue(ctx, "config", config)
-	ctx = context.WithValue(ctx, "services", apiServices)
-	apimux.Post("/login", apimux.handleRequest(handler.Login, ctx))
-	apimux.Post("/post", apimux.handleRequest(handler.Post, ctx))
-	apimux.GET("/get", apimux.handleRequest(handler.GET, ctx))
-	apimux.PUT("/put", apimux.handleRequest(handler.PUT, ctx))
-	apimux.DELETE("/delete", apimux.handleRequest(handler.Delete, ctx))
-}
+	r.Use(helmet.Default())
 
-func (apimux Api) Post(path string, f func(w http.ResponseWriter, r *http.Request)) {
-	apimux.router.HandleFunc(path, f).Methods("POST")
-}
-func (apimux Api) GET(path string, f func(w http.ResponseWriter, r *http.Request)) {
-	apimux.router.HandleFunc(path, f).Methods("GET")
-}
-func (apimux Api) PUT(path string, f func(w http.ResponseWriter, r *http.Request)) {
-	apimux.router.HandleFunc(path, f).Methods("PUT")
-}
-func (apimux Api) DELETE(path string, f func(w http.ResponseWriter, r *http.Request)) {
-	apimux.router.HandleFunc(path, f).Methods("DELETE")
-}
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"*"},
+		AllowHeaders:     []string{"*"},
+		AllowCredentials: true,
+		AllowWildcard:    true,
+	}))
 
-func (a *Api) handleRequest(handler RequestHandlerFunction, ctx context.Context) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		handler(w, r.WithContext(ctx))
-	}
-}
-func (a *Api) Run(apiConfig config.Service) error {
-	if apiConfig.ISSecureConnection {
-		if err := http.ListenAndServeTLS(apiConfig.Host, apiConfig.SSLConfig.CrtFile, apiConfig.SSLConfig.PrivateKey, a.router); err != nil {
-			return err
-		}
-	} else {
-		if err := http.ListenAndServe(apiConfig.Host, a.router); err != nil {
-			return err
-		}
-	}
-	return nil
+	api := r.Group("/api/v1")
+
+	apiInterface := handler.NewAPIInterface(apiServices)
+
+	// Middleware to set a key-value pair in the context
+	api.Use(func(c *gin.Context) {
+		c.Set("config", config)
+		c.Set("services", apiServices)
+		c.Next()
+	})
+
+	api.POST("/login", apiInterface.Auth.LoginHandler)
+
+	return r
+
 }
