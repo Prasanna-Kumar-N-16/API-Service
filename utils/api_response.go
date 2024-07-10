@@ -17,3 +17,13 @@ func APIResponse(ctx *gin.Context, Message string, StatusCode int, Data interfac
 	ctx.JSON(StatusCode, jsonResponse)
 
 }
+
+func AbortAPIResponse(ctx *gin.Context, Message string, StatusCode int, Data interface{}) {
+	jsonResponse := Responses{
+		StatusCode: StatusCode,
+		Message:    Message,
+		Data:       Data,
+	}
+	ctx.AbortWithStatusJSON(StatusCode, jsonResponse)
+
+}
