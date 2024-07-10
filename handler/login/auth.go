@@ -2,7 +2,6 @@ package login
 
 import (
 	"api-service/service"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -20,5 +19,5 @@ func NewHandlerLogin(service *service.APIServices) AuthenticationInterface {
 }
 
 func (h *Authenticationhandler) LoginHandler(ctx *gin.Context) {
-	ctx.JSON(http.StatusOK, "Testing Login API")
+
 }
