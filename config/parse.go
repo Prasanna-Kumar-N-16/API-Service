@@ -14,6 +14,7 @@ type (
 		HttpConfig    *Service         `json:"httpConfig"`
 		Auth          AuthStruct       `json:"authStruct"`
 		MongoDBConfig mongodb.DBConfig `json:"mongoDBConfig"`
+		Domain        string           `json:"domain"`
 	}
 	AuthStruct struct {
 		Key string `json:"key"`
@@ -51,5 +52,12 @@ func getConfig(configFlag string) (*ConfigStruct, error) {
 }
 
 func (config ConfigStruct) validateConfig() (*ConfigStruct, error) {
+	if config.HttpConfig.Host == "" {
+		return nil, errors.New("Host value is empty")
+	}
+	if config.HttpConfig.ISSecureConnection == true &&
+		(config.HttpConfig.SSLConfig.CrtFile == "" || config.HttpConfig.SSLConfig.PrivateKey == "") {
+		return nil, errors.New("CrtFile/PrivateKey filepath not defined in Secure connection")
+	}
 	return &config, nil
 }
