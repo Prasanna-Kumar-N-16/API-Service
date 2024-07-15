@@ -52,7 +52,3 @@ func (h *Authenticationhandler) LoginHandler(ctx *gin.Context) {
 		return
 	}
 }
-
-func (h *Authenticationhandler) Signup(*gin.Context) {
-
-}
