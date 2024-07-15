@@ -53,11 +53,14 @@ func getConfig(configFlag string) (*ConfigStruct, error) {
 
 func (config ConfigStruct) validateConfig() (*ConfigStruct, error) {
 	if config.HttpConfig.Host == "" {
-		return nil, errors.New("Host value is empty")
+		return nil, errors.New("host value is empty")
 	}
-	if config.HttpConfig.ISSecureConnection == true &&
+	if config.HttpConfig.ISSecureConnection &&
 		(config.HttpConfig.SSLConfig.CrtFile == "" || config.HttpConfig.SSLConfig.PrivateKey == "") {
 		return nil, errors.New("CrtFile/PrivateKey filepath not defined in Secure connection")
+	}
+	if config.Domain == "" {
+		return nil, errors.New("admin domain value is empty")
 	}
 	return &config, nil
 }

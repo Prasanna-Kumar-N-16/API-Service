@@ -12,6 +12,7 @@ import (
 
 type AuthenticationInterface interface {
 	LoginHandler(*gin.Context)
+	Signup(*gin.Context)
 }
 
 type Authenticationhandler struct {
@@ -50,4 +51,8 @@ func (h *Authenticationhandler) LoginHandler(ctx *gin.Context) {
 		utils.APIResponse(ctx, reqBodyParseErr, http.StatusBadRequest, nil)
 		return
 	}
+}
+
+func (h *Authenticationhandler) Signup(*gin.Context) {
+
 }

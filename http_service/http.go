@@ -42,6 +42,7 @@ func (a Api) SetRouter(config *config.ConfigStruct, apiServices *service.APIServ
 	})
 
 	api.POST("/login", apiInterface.Auth.LoginHandler)
+	api.POST("/signup", apiInterface.Auth.Signup)
 
 	return r
 
