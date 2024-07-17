@@ -32,7 +32,7 @@ func (a Api) SetRouter(config *config.ConfigStruct, apiServices *service.APIServ
 
 	api := r.Group("/api/v1")
 
-	apiInterface := handler.NewAPIInterface(apiServices)
+	apiInterface := handler.NewAPIInterface(apiServices, *config)
 
 	// Middleware to set a key-value pair in the context
 	api.Use(func(c *gin.Context) {

@@ -1,6 +1,7 @@
 package login
 
 import (
+	"api-service/config"
 	"api-service/logger"
 	"api-service/service"
 	"api-service/utils"
@@ -17,10 +18,11 @@ type AuthenticationInterface interface {
 
 type Authenticationhandler struct {
 	service service.APIServices
+	c       config.ConfigStruct
 }
 
-func NewHandlerLogin(service *service.APIServices) AuthenticationInterface {
-	return &Authenticationhandler{service: *service}
+func NewHandlerLogin(service *service.APIServices, c config.ConfigStruct) AuthenticationInterface {
+	return &Authenticationhandler{service: *service, c: c}
 }
 
 type UserLogin struct {
