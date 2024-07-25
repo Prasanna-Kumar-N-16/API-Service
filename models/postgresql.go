@@ -9,7 +9,7 @@ import (
 )
 
 // Config holds the database configuration settings
-type Config struct {
+type PostgresQL struct {
 	Host     string
 	Port     int
 	User     string
@@ -25,7 +25,7 @@ type Service struct {
 }
 
 // NewService creates a new database service
-func NewService(cfg Config) (*Service, error) {
+func (cfg PostgresQL) NewService() (*Service, error) {
 	dsn := fmt.Sprintf(
 		"host=%s port=%d user=%s password=%s dbname=%s sslmode=%s TimeZone=%s",
 		cfg.Host, cfg.Port, cfg.User, cfg.Password, cfg.DBName, cfg.SSLMode, cfg.TimeZone,

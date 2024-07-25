@@ -12,5 +12,10 @@ func StartServices(c *config.ConfigStruct) (*service.APIServices, error) {
 	} else {
 		apiServices.MongoDBServices.MongoDBClient = mongodbClient
 	}
+	if postService, err := c.PostgresQL.NewService(); err != nil {
+		return nil, err
+	} else {
+		apiServices.PostgesQL = postService
+	}
 	return apiServices, nil
 }

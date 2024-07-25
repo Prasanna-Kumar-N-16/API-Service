@@ -11,10 +11,11 @@ import (
 
 type (
 	ConfigStruct struct {
-		HttpConfig    *Service        `json:"httpConfig"`
-		Auth          AuthStruct      `json:"authStruct"`
-		MongoDBConfig models.DBConfig `json:"mongoDBConfig"`
-		Domain        string          `json:"domain"`
+		HttpConfig    *Service          `json:"httpConfig"`
+		Auth          AuthStruct        `json:"authStruct"`
+		MongoDBConfig models.DBConfig   `json:"mongoDBConfig"`
+		PostgresQL    models.PostgresQL `json:"postgresQL"`
+		Domain        string            `json:"domain"`
 	}
 	AuthStruct struct {
 		Key string `json:"key"`
