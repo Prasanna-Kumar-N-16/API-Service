@@ -1,10 +1,10 @@
 package service
 
-import "api-service/mongodb"
+import "api-service/models"
 
 type APIServices struct {
 	MongoDBServices MongoDBServices
 }
 type MongoDBServices struct {
-	MongoDBClient *mongodb.DBConnector
+	MongoDBClient *models.DBConnector
 }

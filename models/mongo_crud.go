@@ -1,4 +1,4 @@
-package mongodb
+package models
 
 import (
 	"api-service/logger"
