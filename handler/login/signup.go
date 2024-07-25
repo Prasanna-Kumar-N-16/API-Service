@@ -9,6 +9,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+const (
+	admin = "admin"
+)
+
 type AdminSignupRequest struct {
 	Email    string `json:"email" binding:"required,email"`
 	Password string `json:"password" binding:"required,min=8"`
@@ -20,6 +24,7 @@ type Admin struct {
 	Email      string `gorm:"uniqueIndex"`
 	Password   string // Note: In production, store hashed passwords, not plain text.
 	IsVerified bool   `gorm:"default:false"`
+	Role       string `gorm:"admin"`
 	CreatedAt  time.Time
 }
 
@@ -34,7 +39,7 @@ func (h *Authenticationhandler) Signup(c *gin.Context) {
 
 	// Validate email domain
 	if !utils.IsAdminEmail(req.Email, h.c.Domain) {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid email domain. Only example.com emails are allowed."})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid email domain. Only " + h.c.Domain + " emails are allowed."})
 		return
 	}
 
@@ -43,6 +48,7 @@ func (h *Authenticationhandler) Signup(c *gin.Context) {
 		Email:      req.Email,
 		Password:   req.Password,
 		IsVerified: false,
+		Role:       admin,
 		CreatedAt:  time.Now(),
 	}
 
