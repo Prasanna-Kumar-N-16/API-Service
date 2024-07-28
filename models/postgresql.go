@@ -21,8 +21,7 @@ type PostgresQL struct {
 
 // Service holds the database connection and current table context
 type Service struct {
-	DB       *gorm.DB
-	tableCtx string
+	DB *gorm.DB
 }
 
 // NewService creates a new database service
@@ -41,14 +40,9 @@ func (cfg PostgresQL) NewService() (*Service, error) {
 	return &Service{DB: db}, nil
 }
 
-// SetTable sets the current table context
-func (s *Service) SetTable(tableName string) {
-	s.tableCtx = tableName
-}
-
 // Create inserts a new record into the current table
-func (s *Service) Create(record interface{}) error {
-	if err := s.DB.Table(s.tableCtx).Create(record).Error; err != nil {
+func (s *Service) Create(tableCtx string, record interface{}) error {
+	if err := s.DB.Table(tableCtx).Create(record).Error; err != nil {
 		return fmt.Errorf("failed to create record: %w", err)
 	}
 	return nil

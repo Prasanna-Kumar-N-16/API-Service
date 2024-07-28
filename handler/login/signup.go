@@ -53,7 +53,7 @@ func (h *Authenticationhandler) Signup(c *gin.Context) {
 		CreatedAt:  time.Now(),
 	}
 
-	if err := h.service.PostgesQL.DB.Create(&adminInfo).Error; err != nil {
+	if err := h.service.PostgesQL.Create(admin, &adminInfo).Error; err != nil {
 		logService.Errorln("error : Failed to create admin")
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create admin"})
 		return
