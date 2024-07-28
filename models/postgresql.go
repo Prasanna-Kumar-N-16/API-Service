@@ -19,9 +19,10 @@ type PostgresQL struct {
 	TimeZone string
 }
 
-// Service holds the database connection
+// Service holds the database connection and current table context
 type Service struct {
-	DB *gorm.DB
+	DB       *gorm.DB
+	tableCtx string
 }
 
 // NewService creates a new database service
@@ -38,4 +39,17 @@ func (cfg PostgresQL) NewService() (*Service, error) {
 	}
 
 	return &Service{DB: db}, nil
+}
+
+// SetTable sets the current table context
+func (s *Service) SetTable(tableName string) {
+	s.tableCtx = tableName
+}
+
+// Create inserts a new record into the current table
+func (s *Service) Create(record interface{}) error {
+	if err := s.DB.Table(s.tableCtx).Create(record).Error; err != nil {
+		return fmt.Errorf("failed to create record: %w", err)
+	}
+	return nil
 }
