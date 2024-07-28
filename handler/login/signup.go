@@ -1,6 +1,7 @@
 package login
 
 import (
+	"api-service/encryption"
 	"api-service/logger"
 	"api-service/utils"
 	"net/http"
@@ -52,6 +53,15 @@ func (h *Authenticationhandler) Signup(c *gin.Context) {
 		Role:       admin,
 		CreatedAt:  time.Now(),
 	}
+
+	//TODO : Add encryption key from config file
+
+	encryptedPassword, err := encryption.Encrypt(adminInfo.Password, "")
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to encrypt password"})
+		return
+	}
+	adminInfo.Password = encryptedPassword
 
 	if err := h.service.PostgesQL.Create(admin, &adminInfo).Error; err != nil {
 		logService.Errorln("error : Failed to create admin")
