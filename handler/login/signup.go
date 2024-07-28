@@ -39,17 +39,24 @@ func (h *Authenticationhandler) Signup(c *gin.Context) {
 
 	// Validate email domain
 	if !utils.IsAdminEmail(req.Email, h.c.Domain) {
+		logService.Errorln("error" + "Invalid email domain. Only " + h.c.Domain + " emails are allowed.")
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid email domain. Only " + h.c.Domain + " emails are allowed."})
 		return
 	}
 
 	// Create the admin record in the database
-	_ = Admin{
+	adminInfo := Admin{
 		Email:      req.Email,
 		Password:   req.Password,
 		IsVerified: false,
 		Role:       admin,
 		CreatedAt:  time.Now(),
+	}
+
+	if err := h.service.PostgesQL.DB.Create(&adminInfo).Error; err != nil {
+		logService.Errorln("error : Failed to create admin")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create admin"})
+		return
 	}
 
 	// Respond with success
