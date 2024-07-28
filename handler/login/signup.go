@@ -38,6 +38,12 @@ func (h *Authenticationhandler) Signup(c *gin.Context) {
 		return
 	}
 
+	if req.Email == "" || req.Password == "" {
+		logService.Errorln("error" + "Invalid email or password")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid email or password"})
+		return
+	}
+
 	// Validate email domain
 	if !utils.IsAdminEmail(req.Email, h.c.Domain) {
 		logService.Errorln("error" + "Invalid email domain. Only " + h.c.Domain + " emails are allowed.")
