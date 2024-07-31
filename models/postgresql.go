@@ -10,13 +10,13 @@ import (
 
 // Config holds the database configuration settings
 type PostgresQL struct {
-	Host     string
-	Port     int
-	User     string
-	Password string
-	DBName   string
-	SSLMode  string
-	TimeZone string
+	Host     string `json:"host"`
+	Port     int    `json:"port"`
+	User     string `json:"user"`
+	Password string `json:"password"`
+	DBName   string `json:"dbname"`
+	SSLMode  string `json:"sslmode"`
+	TimeZone string `json:"timezone"`
 }
 
 // Service holds the database connection and current table context
