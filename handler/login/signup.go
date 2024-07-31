@@ -60,9 +60,7 @@ func (h *Authenticationhandler) Signup(c *gin.Context) {
 		CreatedAt:  time.Now(),
 	}
 
-	//TODO : Add encryption key from config file
-
-	encryptedPassword, err := encryption.Encrypt(adminInfo.Password, "")
+	encryptedPassword, err := encryption.Encrypt(adminInfo.Password, h.c.EncryptKey)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to encrypt password"})
 		return

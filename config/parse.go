@@ -16,6 +16,7 @@ type (
 		MongoDBConfig models.DBConfig   `json:"mongoDBConfig"`
 		PostgresQL    models.PostgresQL `json:"postgresQL"`
 		Domain        string            `json:"domain"`
+		EncryptKey    string            `json:"encryptKey"`
 	}
 	AuthStruct struct {
 		Key string `json:"key"`
@@ -62,6 +63,9 @@ func (config ConfigStruct) validateConfig() (*ConfigStruct, error) {
 	}
 	if config.Domain == "" {
 		return nil, errors.New("admin domain value is empty")
+	}
+	if config.EncryptKey == "" {
+		return nil, errors.New("EncryptKey value is empty")
 	}
 	return &config, nil
 }
