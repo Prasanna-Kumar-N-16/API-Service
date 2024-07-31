@@ -17,11 +17,13 @@ func main() {
 	loggerService := logger.StartLogger()
 	config, err := config.Parse()
 	if err != nil {
+		loggerService.Panic("Unable to parse config . Reason: ", err)
 		return
 	}
 	apiService, err := service.StartServices(config)
 	if err != nil {
 		loggerService.Panic("Unable to start the services. Reason: ", err)
+		return
 	}
 	loggerService.Infoln("services started successfully")
 	defer func() {

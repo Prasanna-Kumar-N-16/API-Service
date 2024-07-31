@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"flag"
-	"io/ioutil"
+	"os"
 	"strings"
 )
 
@@ -33,7 +33,7 @@ type (
 )
 
 func Parse() (*ConfigStruct, error) {
-	configFlag := flag.String("config", "config-dev.json", "Used to read the config file")
+	configFlag := flag.String("c", "config-dev.json", "Used to read the config file")
 	flag.Parse()
 	return getConfig(*configFlag)
 }
@@ -41,7 +41,7 @@ func Parse() (*ConfigStruct, error) {
 func getConfig(configFlag string) (*ConfigStruct, error) {
 	config := ConfigStruct{}
 	if strings.Contains(configFlag, ".json") {
-		fileBytes, err := ioutil.ReadFile(configFlag)
+		fileBytes, err := os.ReadFile(configFlag)
 		if err != nil {
 			return nil, err
 		}
