@@ -58,6 +58,13 @@ func (h *Authenticationhandler) Signup(c *gin.Context) {
 		return
 	}
 
+	// Auto migrate the Admin struct to create/update the database table
+	err := h.service.PostgesQL.DB.AutoMigrate(&Admin{})
+	if err != nil {
+		logService.Errorln("failed to migrate database", err)
+		return
+	}
+
 	// Validate email domain
 	if !utils.IsAdminEmail(req.Email, h.c.Domain) {
 		logService.Errorln("error " + "Invalid email domain. Only " + h.c.Domain + " emails are allowed.")
@@ -82,7 +89,7 @@ func (h *Authenticationhandler) Signup(c *gin.Context) {
 	}
 	adminInfo.Password = encryptedPassword
 
-	if err := h.service.PostgesQL.Create("users_signup", &adminInfo).Error; err != nil {
+	if err := h.service.PostgesQL.Create("admins", &adminInfo).Error; err != nil {
 		logService.Errorln("error : Failed to create admin reason", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create admin"})
 		return
