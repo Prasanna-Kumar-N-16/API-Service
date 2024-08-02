@@ -58,6 +58,13 @@ func (h *Authenticationhandler) Signup(c *gin.Context) {
 		return
 	}
 
+	// Ensure the database connection is not nil
+	if h.service.PostgesQL == nil {
+		logService.Errorln("error: Database connection is nil")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
+		return
+	}
+
 	// Auto migrate the Admin struct to create/update the database table
 	err := h.service.PostgesQL.DB.AutoMigrate(&Admin{})
 	if err != nil {
@@ -89,7 +96,7 @@ func (h *Authenticationhandler) Signup(c *gin.Context) {
 	}
 	adminInfo.Password = encryptedPassword
 
-	if err := h.service.PostgesQL.Create("admins", &adminInfo).Error; err != nil {
+	if err := h.service.PostgesQL.Create(&adminInfo).Error; err != nil {
 		logService.Errorln("error : Failed to create admin reason", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create admin"})
 		return
