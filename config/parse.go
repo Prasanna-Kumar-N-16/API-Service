@@ -69,7 +69,7 @@ func (config ConfigStruct) validateConfig() (*ConfigStruct, error) {
 	if config.EncryptKey == "" {
 		return nil, errors.New("EncryptKey value is empty")
 	}
-	if config.Email.Username == "" || config.Email.Password == "" {
+	if config.Email.Username == "" || config.Email.Password == "" || strings.HasSuffix(config.Email.Username, "@gmail.com") {
 		return nil, errors.New("Email Username / Password value is empty")
 	}
 	return &config, nil
