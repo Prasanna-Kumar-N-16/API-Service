@@ -2,6 +2,7 @@ package config
 
 import (
 	"api-service/models"
+	"api-service/utils"
 	"encoding/json"
 	"errors"
 	"flag"
@@ -17,6 +18,7 @@ type (
 		PostgresQL    models.PostgresQL `json:"postgresQL"`
 		Domain        string            `json:"domain"`
 		EncryptKey    string            `json:"encryptKey"`
+		Email         utils.EmailConfig `json:"email"`
 	}
 	AuthStruct struct {
 		Key string `json:"key"`
@@ -66,6 +68,9 @@ func (config ConfigStruct) validateConfig() (*ConfigStruct, error) {
 	}
 	if config.EncryptKey == "" {
 		return nil, errors.New("EncryptKey value is empty")
+	}
+	if config.Email.Username == "" || config.Email.Password == "" {
+		return nil, errors.New("Email Username / Password value is empty")
 	}
 	return &config, nil
 }
