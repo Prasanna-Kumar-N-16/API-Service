@@ -1,0 +1,36 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: api-service-deployment
+
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: api-service
+  template:
+    metadata:
+      labels:
+        app: api-service
+    spec:
+      containers:
+      - name: api-service
+        image: prasannakumarnagaboyina16/api-service:v1.0
+        imagePullPolicy: IfNotPresent
+        ports:
+          - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /ping
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 15
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /readiness
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
