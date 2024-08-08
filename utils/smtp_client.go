@@ -71,3 +71,41 @@ type mockSMTPClient struct {
 	closeError error
 	quitError  error
 }
+
+func (m *mockSMTPClient) Auth(auth smtp.Auth) error {
+	m.authCalled = true
+	return m.authError
+}
+
+func (m *mockSMTPClient) Mail(from string) error {
+	m.mailCalled = true
+	return m.mailError
+}
+
+func (m *mockSMTPClient) Rcpt(to string) error {
+	m.rcptCalled = true
+	return m.rcptError
+}
+
+func (m *mockSMTPClient) Data() (smtpClientWriter, error) {
+	m.dataCalled = true
+	return &mockSMTPClientWriter{mock: m}, m.dataError
+}
+
+func (m *mockSMTPClient) Quit() error {
+	m.quitCalled = true
+	return m.quitError
+}
+
+type mockSMTPClientWriter struct {
+	mock *mockSMTPClient
+}
+
+func (w *mockSMTPClientWriter) Write(p []byte) (int, error) {
+	w.mock.message = string(p)
+	return len(p), w.mock.writeError
+}
+
+func (w *mockSMTPClientWriter) Close() error {
+	return w.mock.closeError
+}
