@@ -53,3 +53,21 @@ func newSMTPClient(host string, tlsConfig *tls.Config) (SMTPClient, error) {
 	}
 	return &smtpClient{client: client}, nil
 }
+
+// Mock implementations for testing
+
+type mockSMTPClient struct {
+	authCalled bool
+	mailCalled bool
+	rcptCalled bool
+	dataCalled bool
+	quitCalled bool
+	message    string
+	authError  error
+	mailError  error
+	rcptError  error
+	dataError  error
+	writeError error
+	closeError error
+	quitError  error
+}
