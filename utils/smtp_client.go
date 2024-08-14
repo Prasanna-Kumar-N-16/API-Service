@@ -42,7 +42,7 @@ func (c *smtpClient) Quit() error {
 	return c.client.Quit()
 }
 
-func newSMTPClient(host string, tlsConfig *tls.Config) (SMTPClient, error) {
+func NewSMTPClient(host string, tlsConfig *tls.Config) (SMTPClient, error) {
 	conn, err := tls.Dial("tcp", host+":"+smtpPort, tlsConfig)
 	if err != nil {
 		return nil, err

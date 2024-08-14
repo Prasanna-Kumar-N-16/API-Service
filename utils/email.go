@@ -16,7 +16,7 @@ type EmailConfig struct {
 }
 
 // Function to send an email with OTP
-func (u EmailConfig) sendOTPEmail(client SMTPClient, email, portalName, portalLink, otp string) error {
+func (u EmailConfig) SendOTPEmail(client SMTPClient, email, portalName, portalLink, otp string) error {
 
 	// Create the email content
 	subject := fmt.Sprintf("Welcome to %s - Your OTP", portalName)

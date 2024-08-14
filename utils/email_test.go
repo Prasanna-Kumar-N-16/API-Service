@@ -14,7 +14,7 @@ func TestSendOTPEmail(t *testing.T) {
 
 	mockClient := &mockSMTPClient{}
 
-	err := emailConfig.sendOTPEmail(mockClient, "recipient@example.com", "TestPortal", "http://testportal.com", "123456")
+	err := emailConfig.SendOTPEmail(mockClient, "recipient@example.com", "TestPortal", "http://testportal.com", "123456")
 	assert.NoError(t, err)
 
 	assert.True(t, mockClient.authCalled, "expected auth to be called")
