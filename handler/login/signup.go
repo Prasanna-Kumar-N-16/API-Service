@@ -102,8 +102,13 @@ func (h *Authenticationhandler) Signup(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error creating SMTP client:" + err.Error()})
 		return
 	}
+	otpStr, err := utils.GenerateOTP(6)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "error in generate"})
+		return
+	}
 	// SEND PORTAL INFO
-	if err := h.c.Email.SendOTPEmail(client, adminInfo.Email, "", "", ""); err != nil {
+	if err := h.c.Email.SendOTPEmail(client, adminInfo.Email, "", "", otpStr); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to send otp"})
 		return
 	}
