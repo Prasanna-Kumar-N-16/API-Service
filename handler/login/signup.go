@@ -91,12 +91,19 @@ func (h *Authenticationhandler) Signup(c *gin.Context) {
 	}
 
 	// Create TLS configuration
-	_ = &tls.Config{
+	tlsConfig := &tls.Config{
 		InsecureSkipVerify: true, // Adjust this according to your needs
 		ServerName:         "smtp.example.com",
 	}
 
-	if err := h.c.Email.SendOTPEmail(nil, "", "", "", ""); err != nil {
+	// Create an SMTP client using the NewSMTPClient function
+	client, err := utils.NewSMTPClient("smtp.gmail.com", tlsConfig)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error creating SMTP client:" + err.Error()})
+		return
+	}
+	// SEND PORTAL INFO
+	if err := h.c.Email.SendOTPEmail(client, adminInfo.Email, "", "", ""); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to send otp"})
 		return
 	}
