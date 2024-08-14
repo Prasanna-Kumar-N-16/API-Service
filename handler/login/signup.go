@@ -4,6 +4,7 @@ import (
 	"api-service/encryption"
 	"api-service/logger"
 	"api-service/utils"
+	"crypto/tls"
 	"net/http"
 	"time"
 
@@ -87,6 +88,17 @@ func (h *Authenticationhandler) Signup(c *gin.Context) {
 		Role:       admin,
 		CreatedAt:  time.Now(),
 		UpdatedAt:  time.Now(),
+	}
+
+	// Create TLS configuration
+	_ = &tls.Config{
+		InsecureSkipVerify: true, // Adjust this according to your needs
+		ServerName:         "smtp.example.com",
+	}
+
+	if err := h.c.Email.SendOTPEmail(nil, "", "", "", ""); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to send otp"})
+		return
 	}
 
 	encryptedPassword, err := encryption.Encrypt(adminInfo.Password, h.c.EncryptKey)
