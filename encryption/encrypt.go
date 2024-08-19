@@ -60,3 +60,18 @@ func Decrypt(cipherText, key string) (string, error) {
 
 	return string(plainText), nil
 }
+
+func VerifyPassword(enteredPassword, storedEncryptedPassword, key string) (bool, error) {
+	// Encrypt the entered password using the same encryption method
+	encryptedPassword, err := Encrypt(enteredPassword, key)
+	if err != nil {
+		return false, err
+	}
+
+	// Compare the encrypted entered password with the stored encrypted password
+	if encryptedPassword == storedEncryptedPassword {
+		return true, nil
+	}
+
+	return false, nil
+}
