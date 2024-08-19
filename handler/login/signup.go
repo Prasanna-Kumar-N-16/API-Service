@@ -12,7 +12,9 @@ import (
 )
 
 const (
-	admin = "admin"
+	admin      = "admin"
+	portalName = "DEMO"
+	portalLink = "portalLink"
 )
 
 type AdminSignupRequest struct {
@@ -108,7 +110,7 @@ func (h *Authenticationhandler) Signup(c *gin.Context) {
 		return
 	}
 	// SEND PORTAL INFO
-	if err := h.c.Email.SendOTPEmail(client, adminInfo.Email, "", "", otpStr); err != nil {
+	if err := h.c.Email.SendOTPEmail(client, adminInfo.Email, portalName, portalLink, otpStr); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to send otp"})
 		return
 	}
