@@ -2,6 +2,7 @@ package login
 
 import (
 	"api-service/config"
+	"api-service/encryption"
 	"api-service/logger"
 	"api-service/service"
 	"api-service/utils"
@@ -51,6 +52,13 @@ func (h *Authenticationhandler) LoginHandler(ctx *gin.Context) {
 	if !strings.Contains(reqBody.Email, "@") && !strings.Contains(reqBody.Email, ".") {
 		logService.Errorln("Email format Invalid")
 		utils.APIResponse(ctx, reqBodyParseErr, http.StatusBadRequest, nil)
+		return
+	}
+	// TODO fetch password from DB for that email
+	validUser, err := encryption.VerifyPassword(reqBody.Password, "", h.c.EncryptKey)
+	if !validUser || err != nil {
+		logService.Errorln("Email / Password entered is wrong")
+		utils.APIResponse(ctx, "Email / Password entered is wrong", http.StatusUnauthorized, nil)
 		return
 	}
 }
