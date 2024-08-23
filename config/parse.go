@@ -21,9 +21,9 @@ type (
 		Email         utils.EmailConfig `json:"email"`
 	}
 	KafkaConfig struct {
-		Brokers string
-		Topic   string
-		GroupID string
+		Brokers string `json:"brokers"`
+		Topic   string `json:"topic"`
+		GroupID string `json:"groupID"`
 	}
 	AuthStruct struct {
 		Key string `json:"key"`
