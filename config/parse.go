@@ -20,6 +20,11 @@ type (
 		EncryptKey    string            `json:"encryptKey"`
 		Email         utils.EmailConfig `json:"email"`
 	}
+	KafkaConfig struct {
+		Brokers string
+		Topic   string
+		GroupID string
+	}
 	AuthStruct struct {
 		Key string `json:"key"`
 	}
