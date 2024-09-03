@@ -1,7 +1,7 @@
 package go_kafka
 
 import (
-	k "github.com/confluentinc/confluent-kafka-go/kafka"
+	k "github.com/confluentinc/confluent-kafka-go/v2/kafka"
 )
 
 func NewProducer(brokers string) (*k.Producer, error) {
