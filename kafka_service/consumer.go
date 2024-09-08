@@ -1,4 +1,4 @@
-package go_kafka
+package kafka_service
 
 import (
 	"log"
@@ -8,7 +8,7 @@ import (
 
 func NewConsumer(bootstrapServers, groupID, topic string) (*kafka.Consumer, error) {
 	// Create a new consumer with the specified configurations
-	c, err := kafka.NewConsumer(&kafka.ConfigMap{
+	c, err := kafka.NewConsumer(map[string]interface{}{
 		"bootstrap.servers":        bootstrapServers,
 		"group.id":                 groupID,
 		"broker.address.family":    "v4", // Avoid connecting to IPv6 brokers

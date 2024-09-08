@@ -1,1 +1,0 @@
-package go_kafka_test

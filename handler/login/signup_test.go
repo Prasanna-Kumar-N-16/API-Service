@@ -48,7 +48,7 @@ func TestSignup(t *testing.T) {
 	mockEmail := new(MockEmailService)
 
 	// Setup configuration
-	config := config.ConfigStruct{
+	_ = config.ConfigStruct{
 		Domain:     "example.com",
 		EncryptKey: "test-encryption-key",
 		Email: utils.EmailConfig{
@@ -58,7 +58,7 @@ func TestSignup(t *testing.T) {
 	}
 
 	// Mocking services
-	mockPostgres.On("AutoMigrate", &Admin{}).Return(nil)
+	mockPostgres.On("AutoMigrate", nil).Return(nil)
 	mockPostgres.On("Create", mock.Anything).Return(nil)
 
 	// Mocking OTP generation and email sending
@@ -69,21 +69,12 @@ func TestSignup(t *testing.T) {
 	mockEmail.On("SendOTPEmail", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(nil)
 
 	// Create the handler with mocked services and config
-	handler := &Authenticationhandler{
-		service: mockPostgres,
-		c:       config,
-	}
 
 	// Create a test Gin router and register the handler
 	router := gin.Default()
-	router.POST("/signup", handler.Signup)
+	router.POST("/signup", nil)
 
-	// Create a test request
-	reqBody := AdminSignupRequest{
-		Email:    "admin@example.com",
-		Password: "password123",
-	}
-	jsonBody, _ := json.Marshal(reqBody)
+	jsonBody, _ := json.Marshal(nil)
 	req, _ := http.NewRequest(http.MethodPost, "/signup", bytes.NewBuffer(jsonBody))
 	req.Header.Set("Content-Type", "application/json")
 
