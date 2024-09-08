@@ -14,7 +14,7 @@ func NewProducer(brokers string) (*k.Producer, error) {
 
 func ProduceMessage(p *k.Producer, topic string, message []byte) error {
 	err := p.Produce(&k.Message{
-		TopicPartition: k.TopicPartition{Topic: &topic, Partition: k.PartitionAny},
+		TopicPartition: k.TopicPartition{Topic: &topic, Partition: 0},
 		Value:          message,
 	}, nil)
 	if err != nil {
