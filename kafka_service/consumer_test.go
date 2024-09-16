@@ -55,3 +55,34 @@ func TestNewConsumer_SubscribeFailure(t *testing.T) {
 	assert.Nil(t, consumer)
 	assert.Error(t, err)
 }
+
+func TestConsumeMessages_Success(t *testing.T) {
+	mockConsumer := new(MockConsumer)
+
+	// Set up a message to return
+	topic := "test-topic"
+	message := &kafka.Message{
+		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: 0},
+		Value:          []byte("test-message"),
+	}
+
+	// Set up mock expectations for successful message consumption
+	mockConsumer.On("ReadMessage", mock.Anything).Return(message, nil).Once()
+
+	go kafka_service.ConsumeMessages(mockConsumer)
+
+	// Wait a bit and then close the consumer
+	mockConsumer.AssertExpectations(t)
+}
+
+func TestConsumeMessages_Failure(t *testing.T) {
+	mockConsumer := new(MockConsumer)
+
+	// Set up mock expectations for message read failure
+	mockConsumer.On("ReadMessage", mock.Anything).Return(nil, errors.New("read error")).Once()
+
+	go kafka_service.ConsumeMessages(mockConsumer)
+
+	// Ensure the mocked methods were called as expected
+	mockConsumer.AssertExpectations(t)
+}
