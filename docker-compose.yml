@@ -5,9 +5,33 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: go_api_service
+    container_name: go_app
     ports:
       - "8080:8080"
+    depends_on:
+      - postgres
+      - kafka
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: your_db_name
+      KAFKA_BROKER: kafka:9092
+    networks:
+      - backend
+
+  postgres:
+    image: postgres:13
+    container_name: postgres
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: your_db_name
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     networks:
       - backend
 
