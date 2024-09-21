@@ -2,6 +2,8 @@ package utils
 
 import (
 	"crypto/rand"
+	"encoding/json"
+	"fmt"
 	"math/big"
 	"strings"
 )
@@ -21,4 +23,21 @@ func GenerateOTP(length int) (string, error) {
 		otp[i] = '0' + byte(num.Int64())
 	}
 	return string(otp), nil
+}
+
+// Function to Marshal and Unmarshal
+func MarshalUnmarshal(input interface{}, output interface{}) error {
+	// Marshal the input interface into JSON
+	jsonData, err := json.Marshal(input)
+	if err != nil {
+		return fmt.Errorf("error during marshal: %v", err)
+	}
+
+	// Unmarshal the JSON data into the output struct
+	err = json.Unmarshal(jsonData, output)
+	if err != nil {
+		return fmt.Errorf("error during unmarshal: %v", err)
+	}
+
+	return nil
 }

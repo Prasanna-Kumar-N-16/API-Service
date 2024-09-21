@@ -54,14 +54,19 @@ func (h *Authenticationhandler) LoginHandler(ctx *gin.Context) {
 		utils.APIResponse(ctx, reqBodyParseErr, http.StatusBadRequest, nil)
 		return
 	}
-	_, exist := h.service.PostgesQL.GetRecord(reqBody.Email)
+	dbOut, exist := h.service.PostgesQL.GetRecord(reqBody.Email)
 	if !exist {
 		logService.Errorln("error : Failed to get record for email :", reqBody.Email)
 		utils.APIResponse(ctx, "Failed to get record for email :"+reqBody.Email, http.StatusInternalServerError, nil)
 		return
 	}
-	// TODO fetch password from DB for that email
-	validUser, err := encryption.VerifyPassword(reqBody.Password, "", h.c.EncryptKey)
+	outst := Admin{}
+	if err := utils.MarshalUnmarshal(dbOut, &outst); err != nil {
+		logService.Errorln("error : Failed to marshal and unmarshal struct :", reqBody.Email)
+		utils.APIResponse(ctx, "Failed to marshal and unmarshal struct :"+reqBody.Email, http.StatusInternalServerError, nil)
+		return
+	}
+	validUser, err := encryption.VerifyPassword(reqBody.Password, outst.Password, h.c.EncryptKey)
 	if !validUser || err != nil {
 		logService.Errorln("Email / Password entered is wrong")
 		utils.APIResponse(ctx, "Email / Password entered is wrong", http.StatusUnauthorized, nil)
