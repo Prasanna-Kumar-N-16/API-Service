@@ -54,6 +54,12 @@ func (h *Authenticationhandler) LoginHandler(ctx *gin.Context) {
 		utils.APIResponse(ctx, reqBodyParseErr, http.StatusBadRequest, nil)
 		return
 	}
+	_, exist := h.service.PostgesQL.GetRecord(reqBody.Email)
+	if !exist {
+		logService.Errorln("error : Failed to get record for email :", reqBody.Email)
+		utils.APIResponse(ctx, "Failed to get record for email :"+reqBody.Email, http.StatusInternalServerError, nil)
+		return
+	}
 	// TODO fetch password from DB for that email
 	validUser, err := encryption.VerifyPassword(reqBody.Password, "", h.c.EncryptKey)
 	if !validUser || err != nil {

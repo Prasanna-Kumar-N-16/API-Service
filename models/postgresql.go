@@ -47,3 +47,8 @@ func (s *Service) Create(record interface{}) error {
 	}
 	return nil
 }
+
+// gets a record from the table
+func (s *Service) GetRecord(recID string) (interface{}, bool) {
+	return s.DB.Get(recID)
+}
