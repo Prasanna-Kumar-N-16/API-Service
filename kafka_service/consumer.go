@@ -23,3 +23,17 @@ func NewConsumer(bootstrapServers, groupID, topic string) (KService, error) {
 	}
 	return KService{C: c}, nil
 }
+
+func (k KService) ConsumeMessages(topic string, c *kafka.Consumer) ([]byte, error) {
+	err := k.C.SubscribeTopics([]string{topic}, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	msg, err := k.C.ReadMessage(2)
+	if err != nil {
+		return nil, err
+	}
+	return msg.Value, nil
+
+}
