@@ -6,6 +6,7 @@ import (
 
 type KService struct {
 	C *kafka.Consumer
+	P *kafka.Producer
 }
 
 func NewKService() KService {
