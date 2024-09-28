@@ -8,6 +8,10 @@ type KService struct {
 	C *kafka.Consumer
 }
 
+func NewKService() KService {
+	return KService{}
+}
+
 func NewConsumer(bootstrapServers, groupID, topic string) (KService, error) {
 	// Create a new consumer with the specified configurations
 	c, err := kafka.NewConsumer(&kafka.ConfigMap{
