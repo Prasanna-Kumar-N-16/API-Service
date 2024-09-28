@@ -1,12 +1,14 @@
 package kafka_service
 
 import (
-	"log"
-
 	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
 )
 
-func NewConsumer(bootstrapServers, groupID, topic string) (*kafka.Consumer, error) {
+type KService struct {
+	C *kafka.Consumer
+}
+
+func NewConsumer(bootstrapServers, groupID, topic string) (KService, error) {
 	// Create a new consumer with the specified configurations
 	c, err := kafka.NewConsumer(&kafka.ConfigMap{
 		"bootstrap.servers":        bootstrapServers,
@@ -17,24 +19,7 @@ func NewConsumer(bootstrapServers, groupID, topic string) (*kafka.Consumer, erro
 		"enable.auto.offset.store": false,
 	})
 	if err != nil {
-		return nil, err
+		return KService{}, err
 	}
-
-	// Subscribe to the topic
-	err = c.SubscribeTopics([]string{topic}, nil)
-	if err != nil {
-		return nil, err
-	}
-	return c, nil
-}
-
-func ConsumeMessages(c *kafka.Consumer) {
-	for {
-		msg, err := c.ReadMessage(-1)
-		if err == nil {
-			log.Printf("Message on %s: %s\n", msg.TopicPartition, string(msg.Value))
-		} else {
-			log.Printf("Consumer error: %v (%v)\n", err, msg)
-		}
-	}
+	return KService{C: c}, nil
 }
