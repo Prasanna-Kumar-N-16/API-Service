@@ -12,7 +12,7 @@ func NewKService() KService {
 	return KService{}
 }
 
-func NewConsumer(bootstrapServers, groupID, topic string) (KService, error) {
+func (k *KService) NewConsumer(bootstrapServers, groupID, topic string) error {
 	// Create a new consumer with the specified configurations
 	c, err := kafka.NewConsumer(&kafka.ConfigMap{
 		"bootstrap.servers":        bootstrapServers,
@@ -23,12 +23,13 @@ func NewConsumer(bootstrapServers, groupID, topic string) (KService, error) {
 		"enable.auto.offset.store": false,
 	})
 	if err != nil {
-		return KService{}, err
+		return err
 	}
-	return KService{C: c}, nil
+	k.C = c
+	return nil
 }
 
-func (k KService) ConsumeMessages(topic string, c *kafka.Consumer) ([]byte, error) {
+func (k *KService) ConsumeMessages(topic string) ([]byte, error) {
 	err := k.C.SubscribeTopics([]string{topic}, nil)
 	if err != nil {
 		return nil, err
