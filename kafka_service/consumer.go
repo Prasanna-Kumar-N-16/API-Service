@@ -13,6 +13,7 @@ func NewKService() KService {
 	return KService{}
 }
 
+// creates a new consumer service
 func (k *KService) NewConsumer(bootstrapServers, groupID, topic string) error {
 	// Create a new consumer with the specified configurations
 	c, err := kafka.NewConsumer(&kafka.ConfigMap{
