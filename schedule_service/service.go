@@ -23,5 +23,8 @@ func StartServices(c *config.ConfigStruct) (*service.APIServices, error) {
 	if err := ks.NewConsumer("", "", ""); err != nil {
 		return nil, err
 	}
+	if err := ks.NewProducer(""); err != nil {
+		return nil, err
+	}
 	return apiServices, nil
 }
