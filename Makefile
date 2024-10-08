@@ -37,6 +37,7 @@ test:
 test_coverage:
 	go test ./... -coverprofile=coverage.out
 
+## docker build command to build an image
 docker-build:
 	docker build -t api-service .
 
