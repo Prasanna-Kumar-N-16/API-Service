@@ -8,6 +8,7 @@ import (
 	"strings"
 )
 
+// verify if email is matching to the domain
 func IsAdminEmail(email, adminDomain string) bool {
 	return strings.HasSuffix(email, "@"+adminDomain)
 }
