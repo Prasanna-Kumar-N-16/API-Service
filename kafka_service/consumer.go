@@ -9,6 +9,7 @@ type KService struct {
 	P *kafka.Producer
 }
 
+// New service for kafka
 func NewKService() KService {
 	return KService{}
 }
