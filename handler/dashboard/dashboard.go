@@ -2,6 +2,7 @@ package dashboard
 
 import (
 	"api-service/config"
+	"api-service/logger"
 	"api-service/service"
 
 	"github.com/gin-gonic/gin"
@@ -21,5 +22,10 @@ func NewReportsInt(service *service.APIServices, c config.ConfigStruct) ReportsI
 }
 
 func (h *Reportshandler) DashboardHandler(c *gin.Context) {
-
+	logService := logger.GetLogger()
+	id := c.Query("id")
+	if id == "" {
+		logService.Errorln("empty id")
+		return
+	}
 }
