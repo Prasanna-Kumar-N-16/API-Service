@@ -4,8 +4,14 @@ import (
 	"api-service/config"
 	"api-service/logger"
 	"api-service/service"
+	"api-service/utils"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
+)
+
+const (
+	reqBodyParseErr = "request body parsing error"
 )
 
 type ReportsInterface interface {
@@ -26,6 +32,7 @@ func (h *Reportshandler) DashboardHandler(c *gin.Context) {
 	id := c.Query("id")
 	if id == "" {
 		logService.Errorln("empty id")
+		utils.APIResponse(c, reqBodyParseErr, http.StatusBadRequest, nil)
 		return
 	}
 }
