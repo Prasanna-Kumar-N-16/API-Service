@@ -9,12 +9,14 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"sync"
 	"syscall"
 	"time"
 )
 
 func main() {
 	loggerService := logger.StartLogger()
+	var wg sync.WaitGroup
 	config, err := config.Parse()
 	if err != nil {
 		loggerService.Panic("Unable to parse config . Reason: ", err)
@@ -45,8 +47,10 @@ func main() {
 	// Channel to listen for OS signals
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	wg.Add(1)
 	// Start server in a separate goroutine
 	go func() {
+		defer wg.Done()
 		var err error
 		if config.HttpConfig.ISSecureConnection {
 			err = server.ListenAndServeTLS(config.HttpConfig.SSLConfig.CrtFile, config.HttpConfig.SSLConfig.PrivateKey)
@@ -74,5 +78,7 @@ func main() {
 	} else {
 		loggerService.Infoln("Server shut down gracefully")
 	}
+	wg.Wait()
+	loggerService.Infoln("Application stopped")
 
 }
